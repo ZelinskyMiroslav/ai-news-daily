@@ -2,14 +2,15 @@ name: Daily AI News
 
 on:
   schedule:
-    - cron: "0 6 * * *"   # minden reggel 6:00 UTC (= 8:00 magyar idő)
-  workflow_dispatch:        # kézi indítás is lehetséges
+    - cron: "0 6 * * *"
+  workflow_dispatch:
 
 jobs:
   fetch-news:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # Node.js 24 warning fix
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -21,10 +22,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests
-
+        
       - name: Run news fetcher
         env:
-          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          NEWSAPI_KEY: ${{ secrets.NEWS_API_KEY }}  # ← NEWS_API_KEY → NEWSAPI_KEY
         run: python fetch_news.py
 
       - name: Commit and push results
